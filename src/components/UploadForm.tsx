@@ -1,20 +1,39 @@
 "use client";
 
 import { useState } from "react";
-import { Upload, FileImage, Settings, Check } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { Upload, FileImage, Settings, Check, Lock } from "lucide-react";
 
 type UploadMode = "basic" | "pro";
 
 export default function UploadForm() {
+  const { data: session } = useSession();
   const [mode, setMode] = useState<UploadMode>("basic");
   const [formData, setFormData] = useState({
     name: "",
     series: "",
     type: "Original",
-    basicDetails: "",
+    basicImageFile: null as File | null,
     proInstructions: "",
     imageFile: null as File | null,
   });
+
+  if (!session) {
+    return (
+      <div className="w-full max-w-3xl mx-auto px-4 text-center">
+        <div className="bg-tomodachi-card p-12 rounded-5xl shadow-bubble relative overflow-hidden flex flex-col items-center justify-center">
+          <Lock size={64} className="text-tomodachi-text/30 mb-6" />
+          <h2 className="text-3xl font-black mb-4 text-tomodachi-text">Acceso Restringido</h2>
+          <p className="text-xl font-bold text-tomodachi-text/70 mb-8">
+            Debes iniciar sesión con Google para poder subir tus propias creaciones de Miis a la guía.
+          </p>
+          <button className="bg-tomodachi-accent text-white px-8 py-4 rounded-full shadow-bubble text-xl font-bold transition-all hover:brightness-110 hover:-translate-y-1 active:translate-y-0 active:shadow-bubble-active">
+            Iniciar Sesión
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const handleToggle = () => {
     setMode(mode === "basic" ? "pro" : "basic");
@@ -49,7 +68,7 @@ export default function UploadForm() {
               }`}
             >
               <FileImage size={20} />
-              Rápida
+              Rápida (Vista B)
             </button>
             <button
               type="button"
@@ -61,7 +80,7 @@ export default function UploadForm() {
               }`}
             >
               <Settings size={20} />
-              Pro
+              Pro (Vista C)
             </button>
           </div>
         </div>
@@ -110,34 +129,43 @@ export default function UploadForm() {
 
           {/* Image Upload Mock */}
           <div className="flex flex-col gap-2 mt-4">
-            <label className="font-bold text-tomodachi-text ml-4">Imagen (QR o Foto)</label>
+            <label className="font-bold text-tomodachi-text ml-4">Imagen Principal (Cara o QR)</label>
             <div className="border-4 border-dashed border-tomodachi-bg hover:border-tomodachi-accent rounded-4xl p-8 text-center cursor-pointer transition-colors bg-white/50">
               <FileImage className="mx-auto text-tomodachi-text/30 mb-4" size={48} />
-              <p className="font-bold text-tomodachi-text/60 text-lg">Haz clic para buscar o arrastra una imagen</p>
+              <p className="font-bold text-tomodachi-text/60 text-lg">Sube la imagen para la Vista A</p>
             </div>
           </div>
 
-          {/* Pro Fields */}
+          {/* Conditional Fields based on Mode */}
+          {mode === "basic" && (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 mt-6 bg-[#E86A17]/10 p-6 rounded-4xl border-2 border-[#E86A17]/20">
+              <h3 className="font-black text-xl text-tomodachi-text mb-4 flex items-center gap-2">
+                <FileImage className="text-[#E86A17]" />
+                Imagen de Detalles Básicos
+              </h3>
+              <p className="font-bold text-tomodachi-text/70 mb-4 ml-2 text-sm">
+                Sube una segunda captura que muestre los componentes usados (para la Vista B).
+              </p>
+              <div className="border-4 border-dashed border-[#E86A17]/30 hover:border-[#E86A17] rounded-3xl p-6 text-center cursor-pointer transition-colors bg-white/50">
+                <FileImage className="mx-auto text-[#E86A17]/50 mb-2" size={32} />
+                <p className="font-bold text-[#E86A17]/70">Subir imagen secundaria</p>
+              </div>
+            </div>
+          )}
+
           {mode === "pro" && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 mt-6 bg-[#4A90E2]/10 p-6 rounded-4xl border-2 border-[#4A90E2]/20">
               <h3 className="font-black text-xl text-[#001A33] mb-4 flex items-center gap-2">
                 <Settings className="text-[#4A90E2]" />
-                Datos Avanzados
+                Instrucciones Pro
               </h3>
               
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
-                  <label className="font-bold text-tomodachi-text ml-4">Detalles Básicos (Pelo, Cara...)</label>
-                  <textarea 
-                    className="bg-white px-6 py-4 rounded-3xl border-2 border-transparent focus:border-[#4A90E2] outline-none font-bold text-lg text-tomodachi-text shadow-inner min-h-[100px] resize-none"
-                    placeholder="Describe los elementos usados..."
-                    value={formData.basicDetails}
-                    onChange={(e) => setFormData({...formData, basicDetails: e.target.value})}
-                  />
-                </div>
-
-                <div className="flex flex-col gap-2">
                   <label className="font-bold text-tomodachi-text ml-4">Instrucciones Paso a Paso (JSON / Formato)</label>
+                  <p className="font-bold text-tomodachi-text/70 mb-2 ml-4 text-sm">
+                    Escribe las instrucciones detalladas con posición, rotación, tamaño... para la Vista C.
+                  </p>
                   <textarea 
                     className="bg-white px-6 py-4 rounded-3xl border-2 border-transparent focus:border-[#4A90E2] outline-none font-bold text-lg text-tomodachi-text shadow-inner min-h-[150px] resize-none"
                     placeholder='Ej: "Ojos: Mover 2 abajo, Tamaño máximo..."'

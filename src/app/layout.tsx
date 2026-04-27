@@ -13,6 +13,8 @@ export const metadata: Metadata = {
   description: "Una guía interactiva de creación de Miis",
 };
 
+import AuthProvider from "@/components/AuthProvider";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -21,7 +23,8 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${nunito.variable} antialiased h-full`}>
       <body className="min-h-full font-sans text-tomodachi-text bg-tomodachi-bg flex flex-col relative overflow-x-hidden selection:bg-tomodachi-accent selection:text-white">
-        {/* Subtle dot pattern background to mimic the game's interface feel */}
+        <AuthProvider>
+          {/* Subtle dot pattern background to mimic the game's interface feel */}
         <div 
           className="fixed inset-0 pointer-events-none z-[-1]" 
           style={{
@@ -30,6 +33,7 @@ export default function RootLayout({
           }}
         />
         {children}
+        </AuthProvider>
       </body>
     </html>
   );

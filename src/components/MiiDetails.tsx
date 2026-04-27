@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { 
   MoveHorizontal, 
   MoveVertical, 
@@ -10,7 +12,8 @@ import {
   Eye,
   Smile,
   CircleUser,
-  Heart
+  Heart,
+  ChevronLeft
 } from "lucide-react";
 
 type ViewMode = "A" | "B" | "C";
@@ -21,15 +24,24 @@ interface MiiDetailsProps {
     name: string;
     series: string | null;
     imageUrl: string | null;
-    basicDetails: string | null;
+    basicImageUrl: string | null;
     proInstructions: string | null;
   };
   isLiked?: boolean;
 }
 
 export default function MiiDetails({ mii, isLiked = false }: MiiDetailsProps) {
+  const { data: session } = useSession();
   const [view, setView] = useState<ViewMode>("A");
   const [liked, setLiked] = useState(isLiked);
+
+  const handleLike = () => {
+    if (!session) {
+      alert("Debes iniciar sesión con Google para dar Like.");
+      return;
+    }
+    setLiked(!liked);
+  };
 
   // Mock parsed instructions for View C (in a real app, this would be parsed from mii.proInstructions JSON)
   const mockProInstructions = [
@@ -50,6 +62,16 @@ export default function MiiDetails({ mii, isLiked = false }: MiiDetailsProps) {
   return (
     <div className="w-full max-w-5xl mx-auto px-4 md:px-6">
       
+      {/* Back Button */}
+      <div className="mb-6">
+        <Link href="/galeria">
+          <button className="bg-tomodachi-card px-6 py-3 rounded-full shadow-bubble flex items-center gap-2 font-black text-lg transition-all hover:-translate-y-1 active:translate-y-0 active:shadow-bubble-active text-tomodachi-text border-4 border-transparent hover:border-white">
+            <ChevronLeft size={24} className="text-tomodachi-accent" />
+            Volver
+          </button>
+        </Link>
+      </div>
+
       {/* Header and Toggles */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-6">
         <div className="bg-tomodachi-card px-8 py-4 rounded-full shadow-bubble flex items-center gap-4">
@@ -62,7 +84,7 @@ export default function MiiDetails({ mii, isLiked = false }: MiiDetailsProps) {
           
           {/* Like Button */}
           <button 
-            onClick={() => setLiked(!liked)}
+            onClick={handleLike}
             className={`ml-4 p-3 rounded-full shadow-bubble transition-all hover:-translate-y-1 active:translate-y-0 active:shadow-bubble-active ${
               liked ? 'bg-pink-500 text-white' : 'bg-tomodachi-bg text-tomodachi-text/40 hover:text-pink-500'
             }`}
@@ -127,9 +149,16 @@ export default function MiiDetails({ mii, isLiked = false }: MiiDetailsProps) {
                   <span className="bg-tomodachi-accent text-white w-8 h-8 rounded-full flex items-center justify-center text-lg">ℹ</span>
                   Detalles Básicos
                 </h3>
-                <p className="text-lg font-bold text-tomodachi-text/80 bg-white p-6 rounded-3xl shadow-sm border-2 border-transparent hover:border-tomodachi-accent/30 transition-colors">
-                  {mii.basicDetails || "Este Mii no tiene detalles básicos registrados."}
-                </p>
+                {mii.basicImageUrl ? (
+                  <div className="w-full bg-white rounded-3xl p-2 shadow-sm border-2 border-transparent">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={mii.basicImageUrl} alt={`Componentes de ${mii.name}`} className="w-full h-auto rounded-2xl" />
+                  </div>
+                ) : (
+                  <p className="text-lg font-bold text-tomodachi-text/80 bg-white p-6 rounded-3xl shadow-sm border-2 border-transparent text-center">
+                    Este Mii no tiene imagen de detalles básicos registrada.
+                  </p>
+                )}
               </div>
             )}
 

@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Search } from "lucide-react";
+import { Search, Heart, Bookmark } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 export type MiiItem = {
   id: string;
@@ -20,8 +21,18 @@ interface GalleryProps {
 const CATEGORIES = ["Todos", "Anime", "Ficción", "Celebridad", "Original"];
 
 export default function Gallery({ initialMiis }: GalleryProps) {
+  const { data: session } = useSession();
   const [searchTerm, setSearchTerm] = useState("");
   const [activeType, setActiveType] = useState("Todos");
+
+  const handleProtectedAction = (action: string) => {
+    if (!session) {
+      alert(`Debes iniciar sesión con Google para ${action === 'like' ? 'dar Like' : 'guardar este Mii'}.`);
+      return;
+    }
+    // Lógica real en el futuro
+    alert(`¡Acción '${action}' registrada para usuario logueado!`);
+  };
 
   // Filter logic
   const filteredMiis = initialMiis.filter((mii) => {
@@ -101,11 +112,29 @@ export default function Gallery({ initialMiis }: GalleryProps) {
                 {mii.series && <span className="text-xs font-bold text-tomodachi-text/60 block truncate">{mii.series}</span>}
               </div>
               
-              <Link href={`/mii/${mii.id}`} className="w-full">
-                <button className="w-full bg-tomodachi-secondary text-tomodachi-text px-4 py-2 rounded-full shadow-bubble font-bold transition-all hover:brightness-105 active:shadow-bubble-active active:translate-y-1">
-                  Ver detalles
+              
+              {/* Card Actions */}
+              <div className="w-full mt-4 flex gap-2">
+                <button 
+                  onClick={() => handleProtectedAction("guardar")}
+                  className="flex-1 bg-tomodachi-bg text-tomodachi-text/70 px-2 py-2 rounded-full shadow-inner font-bold transition-all hover:bg-tomodachi-accent hover:text-white"
+                  title="Añadir a Mis Miis"
+                >
+                  <Bookmark size={18} className="mx-auto" />
                 </button>
-              </Link>
+                <Link href={`/mii/${mii.id}`} className="flex-[3]">
+                  <button className="w-full bg-tomodachi-secondary text-tomodachi-text px-4 py-2 rounded-full shadow-bubble font-bold transition-all hover:brightness-105 active:shadow-bubble-active active:translate-y-1 truncate">
+                    Ver detalles
+                  </button>
+                </Link>
+                <button 
+                  onClick={() => handleProtectedAction("like")}
+                  className="flex-1 bg-tomodachi-bg text-tomodachi-text/70 px-2 py-2 rounded-full shadow-inner font-bold transition-all hover:bg-pink-500 hover:text-white"
+                  title="Dar Like"
+                >
+                  <Heart size={18} className="mx-auto" />
+                </button>
+              </div>
             </div>
           ))}
         </div>
