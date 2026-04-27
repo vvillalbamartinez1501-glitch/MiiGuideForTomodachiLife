@@ -13,20 +13,6 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center pb-20">
       
-      {/* Header */}
-      <header className="w-full max-w-5xl px-6 py-6 mt-4 flex justify-between items-center mb-4">
-        <div className="bg-tomodachi-card px-8 py-3 rounded-full shadow-bubble flex items-center justify-center transform transition-transform hover:scale-105 cursor-pointer">
-          <h1 className="text-2xl font-black tracking-tight text-tomodachi-text">Guía de Miis</h1>
-        </div>
-        
-        <div className="flex gap-4">
-          {/* We will later replace this with a dynamic auth component */}
-          <button className="bg-tomodachi-card text-tomodachi-accent hover:bg-tomodachi-card-hover px-6 py-3 rounded-full shadow-bubble font-bold transition-all hover:-translate-y-1 active:translate-y-0 active:shadow-bubble-active">
-            Iniciar Sesión
-          </button>
-        </div>
-      </header>
-
       {/* Hero Section */}
       <section className="w-full max-w-4xl flex flex-col items-center mt-8 px-6">
         <div className="relative bg-tomodachi-card p-10 rounded-5xl shadow-bubble w-full max-w-2xl text-center overflow-hidden">

@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 };
 
 import AuthProvider from "@/components/AuthProvider";
+import Navbar from "@/components/Navbar";
 
 export default function RootLayout({
   children,
@@ -22,8 +23,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${nunito.variable} antialiased h-full`}>
-      <body className="min-h-full font-sans text-tomodachi-text bg-tomodachi-bg flex flex-col relative overflow-x-hidden selection:bg-tomodachi-accent selection:text-white">
+      <body className="min-h-full font-sans text-tomodachi-text bg-tomodachi-bg flex flex-col relative overflow-x-hidden selection:bg-tomodachi-accent selection:text-white pt-24">
         <AuthProvider>
+          <Navbar />
           {/* Subtle dot pattern background to mimic the game's interface feel */}
         <div 
           className="fixed inset-0 pointer-events-none z-[-1]" 

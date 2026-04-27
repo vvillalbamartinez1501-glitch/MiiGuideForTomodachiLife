@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { 
   MoveHorizontal, 
@@ -31,6 +31,7 @@ interface MiiDetailsProps {
 }
 
 export default function MiiDetails({ mii, isLiked = false }: MiiDetailsProps) {
+  const router = useRouter();
   const { data: session } = useSession();
   const [view, setView] = useState<ViewMode>("A");
   const [liked, setLiked] = useState(isLiked);
@@ -64,12 +65,13 @@ export default function MiiDetails({ mii, isLiked = false }: MiiDetailsProps) {
       
       {/* Back Button */}
       <div className="mb-6">
-        <Link href="/galeria">
-          <button className="bg-tomodachi-card px-6 py-3 rounded-full shadow-bubble flex items-center gap-2 font-black text-lg transition-all hover:-translate-y-1 active:translate-y-0 active:shadow-bubble-active text-tomodachi-text border-4 border-transparent hover:border-white">
-            <ChevronLeft size={24} className="text-tomodachi-accent" />
-            Volver
-          </button>
-        </Link>
+        <button 
+          onClick={() => router.back()}
+          className="bg-tomodachi-card px-6 py-3 rounded-full shadow-bubble flex items-center gap-2 font-black text-lg transition-all hover:-translate-y-1 active:translate-y-0 active:shadow-bubble-active text-tomodachi-text border-4 border-transparent hover:border-white"
+        >
+          <ChevronLeft size={24} className="text-tomodachi-accent" />
+          Volver
+        </button>
       </div>
 
       {/* Header and Toggles */}
