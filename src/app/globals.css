@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+:root {
+  --background: #F5B800; /* Warm yellow-orange background */
+  --foreground: #001A33; /* Dark slate text */
+}
+
+@theme inline {
+  --color-tomodachi-bg: var(--background);
+  --color-tomodachi-card: #FEF9E6; /* Cream white for cards */
+  --color-tomodachi-card-hover: #FFF5D1;
+  --color-tomodachi-text: var(--foreground);
+  --color-tomodachi-accent: #E86A17; /* Checkbox orange */
+  --color-tomodachi-accent-green: #78C07A; /* Selected green */
+  --color-tomodachi-wavy: #EED269; /* Wavy pattern yellow */
+  
+  --shadow-bubble: 0 4px 6px -1px rgba(0, 0, 0, 0.15), 0 2px 4px -1px rgba(0, 0, 0, 0.1), inset 0 -5px 0 rgba(0,0,0,0.1);
+  --shadow-bubble-active: 0 1px 2px 0 rgba(0, 0, 0, 0.1), inset 0 -2px 0 rgba(0,0,0,0.1);
+  
+  --radius-4xl: 2rem;
+  --radius-5xl: 3rem;
+
+  --font-sans: var(--font-nunito), Arial, Helvetica, sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
